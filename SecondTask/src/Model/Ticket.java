@@ -19,30 +19,28 @@ public class Ticket implements Identifiable {
     private float ticketPrice;
     private long duration;
 
-    public Ticket (Long id, String concertHall, int eventCode, long time, boolean isPromo, char sector, float maxBackapackKG){
+    public Ticket(Long id, String concertHall, int eventCode, long time, boolean isPromo, char sector, float maxBackapackKG) {
         Date startTime = new Date();
-
         this.setId(id);
 
-        if (concertHall.length() > 10){
+        if (concertHall.length() > 10) {
             throw new IllegalArgumentException("Hall doesn't exist");
         }
         this.concertHall = concertHall;
-        if (eventCode > 999){
+        if (eventCode > 999) {
             throw new IllegalArgumentException("Invalid code");
         }
         this.eventCode = eventCode;
 
-        if(sector != 'A' && sector != 'B' && sector != 'C'){
+        if (sector != 'A' && sector != 'B' && sector != 'C') {
             throw new IllegalArgumentException("Choose between A, B, C sectors.");
         }
 
         this.time = time;
         this.isPromo = isPromo;
-        if(isPromo){
+        if (isPromo) {
             ticketPrice = 100.00f;
-        }
-        else {
+        } else {
             ticketPrice = 150.00f;
         }
         this.sector = sector;
@@ -51,15 +49,15 @@ public class Ticket implements Identifiable {
         this.duration = endTime.getTime() - startTime.getTime();
     }
 
-    public Ticket (String concertHall, int eventCode, long time){
+    public Ticket(String concertHall, int eventCode, long time) {
         Date startTime = new Date();
 
-        if (concertHall.length() > 10){
+        if (concertHall.length() > 10) {
             throw new IllegalArgumentException("Hall doesn't exist");
         }
         this.concertHall = concertHall;
 
-        if (eventCode > 999){
+        if (eventCode > 999) {
             throw new IllegalArgumentException("Invalid code");
         }
         this.eventCode = eventCode;
@@ -70,16 +68,12 @@ public class Ticket implements Identifiable {
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
     }
-    public Ticket (){
+
+    public Ticket() {
         Date startTime = new Date();
         ticketPrice = 249.99f;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override
@@ -89,17 +83,16 @@ public class Ticket implements Identifiable {
 
     @Override
     public void setId(Long id) {
-        if (this.getId() == null){
+        if (this.getId() == null) {
             idList.add(id);
             this.id = id;
         } else if (this.getId() != null) {
-            if(idList.contains(id)){
-                throw new IllegalArgumentException("ID "+ id + " already exists.");
+            if (idList.contains(id)) {
+                throw new IllegalArgumentException("ID " + id + " already exists.");
             }
-            if(id == null){
+            if (id == null) {
                 throw new NullPointerException("Write ID value.");
-            }
-            else {
+            } else {
                 idList.remove(this.id);
                 this.id = id;
                 idList.add(id);
@@ -107,7 +100,7 @@ public class Ticket implements Identifiable {
         }
     }
 
-    public long getDuration(){
+    public long getDuration() {
         return this.duration;
     }
 
