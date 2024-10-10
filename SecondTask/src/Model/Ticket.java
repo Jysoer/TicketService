@@ -22,13 +22,7 @@ public class Ticket implements Identifiable {
     public Ticket (Long id, String concertHall, int eventCode, long time, boolean isPromo, char sector, float maxBackapackKG){
         Date startTime = new Date();
 
-        if(idList.contains(id)){
-            throw new IllegalArgumentException("ID "+ id + " already exists.");
-        }
-        else {
-            idList.add(id);
-        }
-        this.id = id;
+        this.setId(id);
 
         if (concertHall.length() > 10){
             throw new IllegalArgumentException("Hall doesn't exist");
