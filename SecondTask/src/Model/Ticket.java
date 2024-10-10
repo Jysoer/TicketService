@@ -16,14 +16,19 @@ public class Ticket implements Identifiable, Printable {
     private Long id;
     private String concertHall;
     private int eventCode;
-    private long time;
+    private LocalDateTime time;
+    private DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private boolean isPromo;
-    private char sector;
+    private StadiumSector sector;
+
+
+
     private float maxBackapackKG;
     private float ticketPrice;
     private long duration;
 
-    public Ticket(Long id, String concertHall, int eventCode, long time, boolean isPromo, char sector, float maxBackapackKG) {
+    public Ticket(Long id, String concertHall, int eventCode, LocalDateTime time,
+                  boolean isPromo, StadiumSector sector, float maxBackapackKG) {
         Date startTime = new Date();
         this.setId(id);
 
