@@ -87,6 +87,26 @@ public class Ticket implements Identifiable {
         return id;
     }
 
+    @Override
+    public void setId(Long id) {
+        if (this.getId() == null){
+            idList.add(id);
+            this.id = id;
+        } else if (this.getId() != null) {
+            if(idList.contains(id)){
+                throw new IllegalArgumentException("ID "+ id + " already exists.");
+            }
+            if(id == null){
+                throw new NullPointerException("Write ID value.");
+            }
+            else {
+                idList.remove(this.id);
+                this.id = id;
+                idList.add(id);
+            }
+        }
+    }
+
     public long getDuration(){
         return this.duration;
     }
