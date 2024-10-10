@@ -87,6 +87,10 @@ public class Ticket implements Identifiable {
         return id;
     }
 
+    public long getDuration(){
+        return this.duration;
+    }
+
     public float getTicketPrice() {
         return ticketPrice;
     }
