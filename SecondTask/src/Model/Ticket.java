@@ -1,12 +1,14 @@
 package Model;
 
+import Enums.StadiumSector;
 import Interfaces.Identifiable;
+import Interfaces.Printable;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Ticket implements Identifiable {
+public class Ticket implements Identifiable, Printable {
     private static List<Long> idList = new ArrayList<>();
 
     private Long id;
@@ -74,6 +76,18 @@ public class Ticket implements Identifiable {
         ticketPrice = 249.99f;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
+    }
+
+    public void setSector(StadiumSector sector){
+        this.sector = sector;
+    }
+
+    public StadiumSector getSector(){
+        return this.sector;
+    }
+
+    public void print(){
+        System.out.println("Ticket's content.");
     }
 
     @Override
