@@ -1,4 +1,10 @@
+package Model;
+
+import Interfaces.Identifiable;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Ticket implements Identifiable {
     private static List<Long> idList = new ArrayList<>();
@@ -11,9 +17,9 @@ public class Ticket implements Identifiable {
     private char sector;
     private float maxBackapackKG;
     private float ticketPrice;
-    long duration;
+    private long duration;
 
-    public Ticket (String id, String concertHall, int eventCode, long time, boolean isPromo, char sector, float maxBackapackKG){
+    public Ticket (Long id, String concertHall, int eventCode, long time, boolean isPromo, char sector, float maxBackapackKG){
         Date startTime = new Date();
 
         if(idList.contains(id)){
