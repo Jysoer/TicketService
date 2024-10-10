@@ -41,7 +41,7 @@ public class Ticket implements Identifiable, Printable {
         }
         this.eventCode = eventCode;
 
-        if (sector != 'A' && sector != 'B' && sector != 'C') {
+        if (sector != StadiumSector.A && sector != StadiumSector.B && sector != StadiumSector.C) {
             throw new IllegalArgumentException("Choose between A, B, C sectors.");
         }
 
@@ -58,7 +58,7 @@ public class Ticket implements Identifiable, Printable {
         this.duration = endTime.getTime() - startTime.getTime();
     }
 
-    public Ticket(String concertHall, int eventCode, long time) {
+    public Ticket(String concertHall, int eventCode, LocalDateTime time) {
         Date startTime = new Date();
 
         if (concertHall.length() > 10) {
@@ -104,6 +104,9 @@ public class Ticket implements Identifiable, Printable {
 
     @Override
     public void setId(Long id) {
+        if (id == null) {
+            throw new NullPointerException("Write ID value.");
+        }
         if (this.getId() == null) {
             idList.add(id);
             this.id = id;
@@ -111,14 +114,48 @@ public class Ticket implements Identifiable, Printable {
             if (idList.contains(id)) {
                 throw new IllegalArgumentException("ID " + id + " already exists.");
             }
-            if (id == null) {
-                throw new NullPointerException("Write ID value.");
-            } else {
-                idList.remove(this.id);
+             else {
+                idList.remove(this.getId());
                 this.id = id;
                 idList.add(id);
             }
         }
+    }
+
+    public float getMaxBackapackKG() {
+        return maxBackapackKG;
+    }
+
+    public boolean isPromo() {
+        return isPromo;
+    }
+
+    public DateTimeFormatter getFormatter() {
+        return formatter;
+    }
+
+    public int getEventCode() {
+        return eventCode;
+    }
+
+    public String getConcertHall() {
+        return concertHall;
+    }
+
+    public static List<Long> getIdList() {
+        return idList;
+    }
+
+    public static void setIdList(List<Long> idList) {
+        Ticket.idList = idList;
+    }
+
+    public void setTime(LocalDateTime time){
+        this.time = time;
+    }
+
+    public LocalDateTime getTime(){
+        return this.time;
     }
 
     public long getDuration() {
@@ -127,5 +164,9 @@ public class Ticket implements Identifiable, Printable {
 
     public float getTicketPrice() {
         return ticketPrice;
+    }
+
+    public void formatOutput(LocalDateTime time){
+        System.out.println("Time: "+ time.format(this.formatter));
     }
 }
