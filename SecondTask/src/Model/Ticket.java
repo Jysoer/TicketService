@@ -1,21 +1,26 @@
 import java.util.Date;
 
-public class Ticket {
-    String id;
-    String concertHall;
-    int eventCode;
-    long time;
-    boolean isPromo;
-    char sector;
-    float maxBackapackKG;
+public class Ticket implements Identifiable {
+    private static List<Long> idList = new ArrayList<>();
+
+    private Long id;
+    private String concertHall;
+    private int eventCode;
+    private long time;
+    private boolean isPromo;
+    private char sector;
+    private float maxBackapackKG;
     private float ticketPrice;
     long duration;
 
     public Ticket (String id, String concertHall, int eventCode, long time, boolean isPromo, char sector, float maxBackapackKG){
         Date startTime = new Date();
 
-        if (id.length() > 4){
-            throw new IllegalArgumentException("Invalid ID");
+        if(idList.contains(id)){
+            throw new IllegalArgumentException("ID "+ id + " already exists.");
+        }
+        else {
+            idList.add(id);
         }
         this.id = id;
 
@@ -70,6 +75,16 @@ public class Ticket {
         ticketPrice = 249.99f;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public Long getId() {
+        return id;
     }
 
     public float getTicketPrice() {
