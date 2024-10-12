@@ -3,6 +3,7 @@ package Model;
 import Enums.StadiumSector;
 import Interfaces.Identifiable;
 import Interfaces.Printable;
+import Interfaces.Sharable;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Ticket implements Identifiable, Printable {
+public class Ticket implements Identifiable, Printable, Sharable {
     private static List<Long> idList = new ArrayList<>();
 
     private Long id;
@@ -120,6 +121,14 @@ public class Ticket implements Identifiable, Printable {
                 idList.add(id);
             }
         }
+    }
+
+    public void shared(String phoneNumber){
+        System.out.println("Ticket ID" + this.getId() + "shared on " + phoneNumber + "");
+    }
+
+    public void shared(String phoneNumber, String email){
+        System.out.println("Ticket ID" + this.getId() + "shared on " + phoneNumber + " and email " + email + "");
     }
 
     public float getMaxBackapackKG() {
