@@ -1,7 +1,8 @@
 package Service;
 
 import Enums.StadiumSector;
-import Interfaces.Sharable;
+import Model.Admin;
+import Model.Client;
 import Model.Ticket;
 
 import java.time.LocalDateTime;
@@ -16,5 +17,14 @@ public class TicketService {
         System.out.println("Creation of ticket №2 took " + ticket2.getDuration() + " ms. Price: " + ticket2.getTicketPrice() + ".");
         Ticket ticket3 = new Ticket();
         System.out.println("Creation of ticket №3 took " + ticket3.getDuration() + " ms. Price: " + ticket3.getTicketPrice() + ".");
+
+        Client adam = new Client();
+        Admin nick = new Admin();
+
+        adam.printRole();
+        adam.getTicket(ticket1);
+
+        nick.printRole();
+        nick.checkTicket(ticket1);
     }
 }
