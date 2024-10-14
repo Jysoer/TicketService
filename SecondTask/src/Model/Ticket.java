@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Ticket implements Identifiable, Printable, Sharable {
     private static List<Long> idList = new ArrayList<>();
@@ -21,9 +22,6 @@ public class Ticket implements Identifiable, Printable, Sharable {
     private DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private boolean isPromo;
     private StadiumSector sector;
-
-
-
     private float maxBackapackKG;
     private float ticketPrice;
     private long duration;
@@ -177,5 +175,44 @@ public class Ticket implements Identifiable, Printable, Sharable {
 
     public void formatOutput(LocalDateTime time){
         System.out.println("Time: "+ time.format(this.formatter));
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Ticket ticket = (Ticket) obj;
+        return Objects.equals(id, ticket.id) &&
+                Objects.equals(concertHall, ticket.concertHall) &&
+                eventCode == ticket.eventCode &&
+                Objects.equals(time, ticket.time) &&
+                isPromo == ticket.isPromo &&
+                Float.compare(maxBackapackKG, ticket.maxBackapackKG) == 0 &&
+                Objects.equals(sector, ticket.sector);
+
+
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(id, concertHall, eventCode, time, isPromo, sector, maxBackapackKG);
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketPrice=" + ticketPrice +
+                ", sector=" + sector +
+                ", isPromo=" + isPromo +
+                ", time=" + time +
+                ", eventCode=" + eventCode +
+                ", concertHall='" + concertHall + '\'' +
+                ", id=" + id +
+                ", maxBackapackKG=" + maxBackapackKG +
+                '}';
     }
 }
