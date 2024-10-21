@@ -80,6 +80,7 @@ public class Ticket implements Identifiable, Printable, Sharable {
 
     public Ticket(String concertHall, int eventCode, LocalDateTime time) {
         Date startTime = new Date();
+        this.id = IdManeger.generateId();
 
         if (concertHall.length() > 10) {
             throw new IllegalArgumentException("Hall doesn't exist");
@@ -106,6 +107,7 @@ public class Ticket implements Identifiable, Printable, Sharable {
 
     public Ticket() {
         Date startTime = new Date();
+        this.id = IdManeger.generateId();
         ticketPrice = 249.99f;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
@@ -151,21 +153,7 @@ public class Ticket implements Identifiable, Printable, Sharable {
 
     @Override
     public void setId(Long id) {
-        if (id == null) {
-            throw new NullPointerException("Write ID value.");
-        }
-        if (this.getId() == null) {
-            idList.add(id);
-            this.id = id;
-        } else if (this.getId() != null) {
-            if (idList.contains(id)) {
-                throw new IllegalArgumentException("ID " + id + " already exists.");
-            } else {
-                idList.remove(this.getId());
-                this.id = id;
-                idList.add(id);
-            }
-        }
+        this.id = id;
     }
 
     public void shared(String phoneNumber) {
