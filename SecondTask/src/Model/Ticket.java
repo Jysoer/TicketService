@@ -7,7 +7,6 @@ import Interfaces.Printable;
 import Interfaces.Sharable;
 import Service.AnnotationValidator;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -30,89 +29,43 @@ public class Ticket implements Identifiable, Printable, Sharable {
     public Ticket(Long id, String concertHall, int eventCode, LocalDateTime time,
                   boolean isPromo, StadiumSector sector, float maxBackapackKG) {
         Date startTime = new Date();
-        if (id == null) {
-            this.setId(IdManeger.generateId());
-        }
-        else {
-            if(IdManeger.addId(id)){
-                this.setId(id);
-            }
-            else {
-                throw new IllegalArgumentException("ID already exists");
-            }
-        }
-
-        if (concertHall.length() > 10) {
-            throw new IllegalArgumentException("Hall doesn't exist");
-        }
+        this.id = generateOrValidateId(id);
+        validateConcertHall(concertHall);
         this.concertHall = concertHall;
-        if (eventCode > 999) {
-            throw new IllegalArgumentException("Invalid code");
-        }
+        validateEventCode(eventCode);
         this.eventCode = eventCode;
-
-        if (sector != StadiumSector.A && sector != StadiumSector.B && sector != StadiumSector.C) {
-            throw new IllegalArgumentException("Choose between A, B, C sectors.");
-        }
-
+        validateSector(sector);
+        this.sector = sector;
         this.time = time;
         this.isPromo = isPromo;
-        if (isPromo) {
-            ticketPrice = 100.00f;
-        } else {
-            ticketPrice = 150.00f;
-        }
-        this.sector = sector;
+        this.ticketPrice = isPromo ? 100.00f : 150.00f;
         this.maxBackapackKG = maxBackapackKG;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
-        CheckNullFields();
-        try {
-            AnnotationValidator.validate(this);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        validateAnnotations();
     }
 
     public Ticket(String concertHall, int eventCode, LocalDateTime time) {
         Date startTime = new Date();
         this.id = IdManeger.generateId();
-
-        if (concertHall.length() > 10) {
-            throw new IllegalArgumentException("Hall doesn't exist");
-        }
+        validateConcertHall(concertHall);
         this.concertHall = concertHall;
-
-        if (eventCode > 999) {
-            throw new IllegalArgumentException("Invalid code");
-        }
+        validateEventCode(eventCode);
         this.eventCode = eventCode;
         this.time = time;
-
-        ticketPrice = 199.99f;
-
+        this.ticketPrice = 199.99f;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
-        CheckNullFields();
-        try {
-            AnnotationValidator.validate(this);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        validateAnnotations();
     }
 
     public Ticket() {
         Date startTime = new Date();
         this.id = IdManeger.generateId();
-        ticketPrice = 249.99f;
+        this.ticketPrice = 249.99f;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
-        CheckNullFields();
-        try {
-            AnnotationValidator.validate(this);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        validateAnnotations();
     }
 
     public void setSector(StadiumSector sector) {
@@ -221,22 +174,43 @@ public class Ticket implements Identifiable, Printable, Sharable {
         System.out.println(this.toString());
     }
 
-    public void CheckNullFields() {
-        for (Field field : this.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(NullableWarning.class)) {
-                field.setAccessible(true);
-                try {
-                    if (field.get(this) == null) {
-                        System.out.println("Variable [" + field.getName() + "] is null in [" + this.getClass().getSimpleName() + "]!");
-                    }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
+    private Long generateOrValidateId(Long id) {
+        if (id == null) {
+            return IdManeger.generateId();
+        } else if (IdManeger.addId(id)) {
+            return id;
+        } else {
+            throw new IllegalArgumentException("ID already exists");
+        }
+    }
+
+    private void validateConcertHall(String concertHall) {
+        if (concertHall.length() > 10) {
+            throw new IllegalArgumentException("Hall doesn't exist");
+        }
+    }
+
+    private void validateEventCode(int eventCode) {
+        if (eventCode > 999) {
+            throw new IllegalArgumentException("Invalid code");
+        }
+    }
+
+    private void validateSector(StadiumSector sector){
+        if (sector != StadiumSector.A && sector != StadiumSector.B && sector != StadiumSector.C) {
+            throw new IllegalArgumentException("Choose between A, B, C sectors.");
         }
     }
 
     public void formatOutput(LocalDateTime time) {
         System.out.println("Time: " + time.format(this.formatter));
+    }
+
+    private void validateAnnotations() {
+        try {
+            AnnotationValidator.validate(this);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }
