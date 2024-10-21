@@ -10,14 +10,10 @@ import Service.AnnotationValidator;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class Ticket implements Identifiable, Printable, Sharable {
-    private static List<Long> idList = new ArrayList<>();
-
     @NullableWarning
     private Long id;
     @NullableWarning
@@ -119,31 +115,12 @@ public class Ticket implements Identifiable, Printable, Sharable {
         }
     }
 
-    public void CheckNullFields() {
-        for (Field field : this.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(NullableWarning.class)) {
-                field.setAccessible(true);
-                try {
-                    if (field.get(this) == null) {
-                        System.out.println("Variable [" + field.getName() + "] is null in [" + this.getClass().getSimpleName() + "]!");
-                    }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     public void setSector(StadiumSector sector) {
         this.sector = sector;
     }
 
     public StadiumSector getSector() {
         return this.sector;
-    }
-
-    public void print() {
-        System.out.println("Ticket's content.");
     }
 
     @Override
@@ -184,14 +161,6 @@ public class Ticket implements Identifiable, Printable, Sharable {
         return concertHall;
     }
 
-    public static List<Long> getIdList() {
-        return idList;
-    }
-
-    public static void setIdList(List<Long> idList) {
-        Ticket.idList = idList;
-    }
-
     public void setTime(LocalDateTime time) {
         this.time = time;
     }
@@ -206,10 +175,6 @@ public class Ticket implements Identifiable, Printable, Sharable {
 
     public float getTicketPrice() {
         return ticketPrice;
-    }
-
-    public void formatOutput(LocalDateTime time) {
-        System.out.println("Time: " + time.format(this.formatter));
     }
 
     @Override
