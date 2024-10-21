@@ -5,6 +5,7 @@ import Interfaces.Identifiable;
 import Interfaces.NullableWarning;
 import Interfaces.Printable;
 import Interfaces.Sharable;
+import Service.AnnotationValidator;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -33,7 +34,17 @@ public class Ticket implements Identifiable, Printable, Sharable {
     public Ticket(Long id, String concertHall, int eventCode, LocalDateTime time,
                   boolean isPromo, StadiumSector sector, float maxBackapackKG) {
         Date startTime = new Date();
-        this.setId(id);
+        if (id == null) {
+            this.setId(IdManeger.generateId());
+        }
+        else {
+            if(IdManeger.addId(id)){
+                this.setId(id);
+            }
+            else {
+                throw new IllegalArgumentException("ID already exists");
+            }
+        }
 
         if (concertHall.length() > 10) {
             throw new IllegalArgumentException("Hall doesn't exist");
@@ -60,6 +71,11 @@ public class Ticket implements Identifiable, Printable, Sharable {
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
         CheckNullFields();
+        try {
+            AnnotationValidator.validate(this);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public Ticket(String concertHall, int eventCode, LocalDateTime time) {
@@ -81,6 +97,11 @@ public class Ticket implements Identifiable, Printable, Sharable {
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
         CheckNullFields();
+        try {
+            AnnotationValidator.validate(this);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public Ticket() {
@@ -89,6 +110,11 @@ public class Ticket implements Identifiable, Printable, Sharable {
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
         CheckNullFields();
+        try {
+            AnnotationValidator.validate(this);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public void CheckNullFields() {
@@ -235,5 +261,29 @@ public class Ticket implements Identifiable, Printable, Sharable {
                 ", id=" + id +
                 ", maxBackapackKG=" + maxBackapackKG +
                 '}';
+    }
+
+    @Override
+    public void print(){
+        System.out.println(this.toString());
+    }
+
+    public void CheckNullFields() {
+        for (Field field : this.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(NullableWarning.class)) {
+                field.setAccessible(true);
+                try {
+                    if (field.get(this) == null) {
+                        System.out.println("Variable [" + field.getName() + "] is null in [" + this.getClass().getSimpleName() + "]!");
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void formatOutput(LocalDateTime time) {
+        System.out.println("Time: " + time.format(this.formatter));
     }
 }
