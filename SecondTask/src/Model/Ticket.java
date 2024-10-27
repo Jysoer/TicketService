@@ -5,18 +5,14 @@ import Interfaces.Identifiable;
 import Interfaces.NullableWarning;
 import Interfaces.Printable;
 import Interfaces.Sharable;
+import Service.AnnotationValidator;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class Ticket implements Identifiable, Printable, Sharable {
-    private static List<Long> idList = new ArrayList<>();
-
     @NullableWarning
     private Long id;
     @NullableWarning
@@ -33,77 +29,43 @@ public class Ticket implements Identifiable, Printable, Sharable {
     public Ticket(Long id, String concertHall, int eventCode, LocalDateTime time,
                   boolean isPromo, StadiumSector sector, float maxBackapackKG) {
         Date startTime = new Date();
-        this.setId(id);
-
-        if (concertHall.length() > 10) {
-            throw new IllegalArgumentException("Hall doesn't exist");
-        }
+        this.id = IdManeger.generateOrValidateId(id);
+        validateConcertHall(concertHall);
         this.concertHall = concertHall;
-        if (eventCode > 999) {
-            throw new IllegalArgumentException("Invalid code");
-        }
+        validateEventCode(eventCode);
         this.eventCode = eventCode;
-
-        if (sector != StadiumSector.A && sector != StadiumSector.B && sector != StadiumSector.C) {
-            throw new IllegalArgumentException("Choose between A, B, C sectors.");
-        }
-
+        validateSector(sector);
+        this.sector = sector;
         this.time = time;
         this.isPromo = isPromo;
-        if (isPromo) {
-            ticketPrice = 100.00f;
-        } else {
-            ticketPrice = 150.00f;
-        }
-        this.sector = sector;
+        this.ticketPrice = isPromo ? 100.00f : 150.00f;
         this.maxBackapackKG = maxBackapackKG;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
-        CheckNullFields();
+        validateAnnotations();
     }
 
     public Ticket(String concertHall, int eventCode, LocalDateTime time) {
         Date startTime = new Date();
-
-        if (concertHall.length() > 10) {
-            throw new IllegalArgumentException("Hall doesn't exist");
-        }
+        this.id = IdManeger.generateId();
+        validateConcertHall(concertHall);
         this.concertHall = concertHall;
-
-        if (eventCode > 999) {
-            throw new IllegalArgumentException("Invalid code");
-        }
+        validateEventCode(eventCode);
         this.eventCode = eventCode;
         this.time = time;
-
-        ticketPrice = 199.99f;
-
+        this.ticketPrice = 199.99f;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
-        CheckNullFields();
+        validateAnnotations();
     }
 
     public Ticket() {
         Date startTime = new Date();
-        ticketPrice = 249.99f;
+        this.id = IdManeger.generateId();
+        this.ticketPrice = 249.99f;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
-        CheckNullFields();
-    }
-
-    public void CheckNullFields() {
-        for (Field field : this.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(NullableWarning.class)) {
-                field.setAccessible(true);
-                try {
-                    if (field.get(this) == null) {
-                        System.out.println("Variable [" + field.getName() + "] is null in [" + this.getClass().getSimpleName() + "]!");
-                    }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        validateAnnotations();
     }
 
     public void setSector(StadiumSector sector) {
@@ -114,10 +76,6 @@ public class Ticket implements Identifiable, Printable, Sharable {
         return this.sector;
     }
 
-    public void print() {
-        System.out.println("Ticket's content.");
-    }
-
     @Override
     public Long getId() {
         return id;
@@ -125,21 +83,7 @@ public class Ticket implements Identifiable, Printable, Sharable {
 
     @Override
     public void setId(Long id) {
-        if (id == null) {
-            throw new NullPointerException("Write ID value.");
-        }
-        if (this.getId() == null) {
-            idList.add(id);
-            this.id = id;
-        } else if (this.getId() != null) {
-            if (idList.contains(id)) {
-                throw new IllegalArgumentException("ID " + id + " already exists.");
-            } else {
-                idList.remove(this.getId());
-                this.id = id;
-                idList.add(id);
-            }
-        }
+        this.id = id;
     }
 
     public void shared(String phoneNumber) {
@@ -170,14 +114,6 @@ public class Ticket implements Identifiable, Printable, Sharable {
         return concertHall;
     }
 
-    public static List<Long> getIdList() {
-        return idList;
-    }
-
-    public static void setIdList(List<Long> idList) {
-        Ticket.idList = idList;
-    }
-
     public void setTime(LocalDateTime time) {
         this.time = time;
     }
@@ -192,10 +128,6 @@ public class Ticket implements Identifiable, Printable, Sharable {
 
     public float getTicketPrice() {
         return ticketPrice;
-    }
-
-    public void formatOutput(LocalDateTime time) {
-        System.out.println("Time: " + time.format(this.formatter));
     }
 
     @Override
@@ -214,8 +146,6 @@ public class Ticket implements Identifiable, Printable, Sharable {
                 isPromo == ticket.isPromo &&
                 Float.compare(maxBackapackKG, ticket.maxBackapackKG) == 0 &&
                 Objects.equals(sector, ticket.sector);
-
-
     }
 
     @Override
@@ -235,5 +165,40 @@ public class Ticket implements Identifiable, Printable, Sharable {
                 ", id=" + id +
                 ", maxBackapackKG=" + maxBackapackKG +
                 '}';
+    }
+
+    @Override
+    public void print(){
+        System.out.println(this.toString());
+    }
+
+    private void validateConcertHall(String concertHall) {
+        if (concertHall.length() > 10) {
+            throw new IllegalArgumentException("Hall doesn't exist");
+        }
+    }
+
+    private void validateEventCode(int eventCode) {
+        if (eventCode > 999) {
+            throw new IllegalArgumentException("Invalid code");
+        }
+    }
+
+    private void validateSector(StadiumSector sector){
+        if (sector != StadiumSector.A && sector != StadiumSector.B && sector != StadiumSector.C) {
+            throw new IllegalArgumentException("Choose between A, B, C sectors.");
+        }
+    }
+
+    public void formatOutput(LocalDateTime time) {
+        System.out.println("Time: " + time.format(this.formatter));
+    }
+
+    private void validateAnnotations() {
+        try {
+            AnnotationValidator.validate(this);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }
