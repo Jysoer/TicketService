@@ -7,17 +7,7 @@ public abstract class User implements Identifiable {
     private Long id;
 
     public User(){
-        this.id = IdManeger.generateId();
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = IdManeger.generateOrValidateId(id);
-    }
-
-    @Override
-    public Long getId() {
-        return id;
+        this.id = IdGenerator.generateId();
     }
 
     public void printRole(){

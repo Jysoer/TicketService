@@ -1,7 +1,10 @@
 package Interfaces;
 
-public interface Identifiable {
-    Long getId();
-    void setId(Long id);
+import Model.IdGenerator;
 
+public interface Identifiable {
+    default Long getId() {
+        return IdGenerator.generateId();
+    }
 }
+
