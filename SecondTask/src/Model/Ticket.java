@@ -26,10 +26,10 @@ public class Ticket implements Identifiable, Printable, Sharable {
     private float ticketPrice;
     private long duration;
 
-    public Ticket(Long id, String concertHall, int eventCode, LocalDateTime time,
+    public Ticket(String concertHall, int eventCode, LocalDateTime time,
                   boolean isPromo, StadiumSector sector, float maxBackapackKG) {
         Date startTime = new Date();
-        this.id = IdManeger.generateOrValidateId(id);
+        this.id = IdGenerator.generateId();
         validateConcertHall(concertHall);
         this.concertHall = concertHall;
         validateEventCode(eventCode);
@@ -47,7 +47,7 @@ public class Ticket implements Identifiable, Printable, Sharable {
 
     public Ticket(String concertHall, int eventCode, LocalDateTime time) {
         Date startTime = new Date();
-        this.id = IdManeger.generateId();
+        this.id = IdGenerator.generateId();
         validateConcertHall(concertHall);
         this.concertHall = concertHall;
         validateEventCode(eventCode);
@@ -61,7 +61,7 @@ public class Ticket implements Identifiable, Printable, Sharable {
 
     public Ticket() {
         Date startTime = new Date();
-        this.id = IdManeger.generateId();
+        this.id = IdGenerator.generateId();
         this.ticketPrice = 249.99f;
         Date endTime = new Date();
         this.duration = endTime.getTime() - startTime.getTime();
@@ -74,16 +74,6 @@ public class Ticket implements Identifiable, Printable, Sharable {
 
     public StadiumSector getSector() {
         return this.sector;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void shared(String phoneNumber) {
