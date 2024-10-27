@@ -15,6 +15,16 @@ public class IdManeger {
         return currentId;
     }
 
+    public static Long generateOrValidateId(Long id) {
+        if (id == null) {
+            return IdManeger.generateId();
+        } else if (IdManeger.addId(id)) {
+            return id;
+        } else {
+            throw new IllegalArgumentException("ID already exists");
+        }
+    }
+
     public static boolean addId(Long id) {
         if (idList.contains(id)) {
             return false;

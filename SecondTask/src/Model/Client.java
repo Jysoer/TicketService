@@ -5,7 +5,12 @@ import Interfaces.Printable;
 public class Client extends User implements Printable {
     private final static String CLIENT_ROLE = "client";
 
-    public Client(){
+    public Client() {
+        super();
+    }
+
+    public Client(Long id) {
+        super();
     }
 
     @Override

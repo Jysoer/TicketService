@@ -3,10 +3,14 @@ package Model;
 
 import Interfaces.Printable;
 
-public class Admin extends User implements Printable {
+public class Admin extends User implements Printable{
     private final static String ADMIN_ROLE = "admin";
 
     public Admin(){
+    }
+
+    public Admin(Long id) {
+        super();
     }
 
     @Override

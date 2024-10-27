@@ -29,7 +29,7 @@ public class Ticket implements Identifiable, Printable, Sharable {
     public Ticket(Long id, String concertHall, int eventCode, LocalDateTime time,
                   boolean isPromo, StadiumSector sector, float maxBackapackKG) {
         Date startTime = new Date();
-        this.id = generateOrValidateId(id);
+        this.id = IdManeger.generateOrValidateId(id);
         validateConcertHall(concertHall);
         this.concertHall = concertHall;
         validateEventCode(eventCode);
@@ -146,8 +146,6 @@ public class Ticket implements Identifiable, Printable, Sharable {
                 isPromo == ticket.isPromo &&
                 Float.compare(maxBackapackKG, ticket.maxBackapackKG) == 0 &&
                 Objects.equals(sector, ticket.sector);
-
-
     }
 
     @Override
@@ -172,16 +170,6 @@ public class Ticket implements Identifiable, Printable, Sharable {
     @Override
     public void print(){
         System.out.println(this.toString());
-    }
-
-    private Long generateOrValidateId(Long id) {
-        if (id == null) {
-            return IdManeger.generateId();
-        } else if (IdManeger.addId(id)) {
-            return id;
-        } else {
-            throw new IllegalArgumentException("ID already exists");
-        }
     }
 
     private void validateConcertHall(String concertHall) {
