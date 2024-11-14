@@ -1,0 +1,12 @@
+Interfaces\NullableWarning.class
+Interfaces\Sharable.class
+Model\Client.class
+Service\AnnotationValidator.class
+Service\TicketService.class
+Enums\StadiumSector.class
+Interfaces\Printable.class
+Model\Ticket.class
+Model\User.class
+Interfaces\Identifiable.class
+Model\Admin.class
+Model\IdGenerator.class

@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-init
+      author: viktoryia
+      changes:
+        - sqlFile:
+            path: db/changelog/2024/11/13/01-init-script.sql
+            stripComments: true
+            splitStatements: true

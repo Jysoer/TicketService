@@ -1,0 +1,53 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      connection-init-sql: SET TIME ZONE 'UTC'
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    #    generate-ddl: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        session:
+          events:
+            log:
+              LOG_QUERIES_SLOWER_THAN_MS: 500
+  liquibase:
+    change-log: db/db.changelog-master.yaml
+    liquibaseSchema: liquibase
+  application:
+    name: ticket-service
+
+#Springdoc config
+springdoc:
+  packagesToScan: com.jfb.project.example.controller
+
+buildVersion: '@pom.version@'
+apiVersion: v.1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        #spring boot actuator
+        include: health,info
+  info:
+    git:
+      #enable full git info in /actuator/info
+      mode: full
+    env:
+      #show variables info.* in /actuator/info
+      enabled: 'true'
+
+info:
+  exposedHosts: spring.application.name-${spring.application.name},springdoc.packagesToScan-${springdoc.packagesToScan}
